@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { TodoList } from './TodoList';
 
@@ -7,6 +7,18 @@ function App() {
 
   const [inputList, setInputList] = useState("");
   const [task, setTask] = useState([]);
+
+  useEffect(()=>{
+    const storedTodos = JSON.parse(localStorage.getItem("task"))
+    if (storedTodos) setTask(storedTodos)
+  }, [])
+
+  // saving the todos
+  useEffect(()=>{
+    localStorage.setItem("task", JSON.stringify(task))
+  }, [task])
+
+
 
   const taskEvents = (event) => {
     setInputList(event.target.value);
@@ -34,7 +46,7 @@ function App() {
           <h1>ToDo List</h1>
           <br />
           <input type="text" placeholder="Add Task" value={inputList} onChange={taskEvents} />
-          <button onClick={listOfTask}> + </button>
+          <button onClick={listOfTask}>+</button>
           <ol>
             {task.map((taskValue, index) => {
               return <TodoList key={index} id={index} text={taskValue} onSelect={deleteTask} />;
